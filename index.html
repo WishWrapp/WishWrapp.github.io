@@ -243,7 +243,7 @@
                 <h2> Sign up </h2>
   
 
-  
+
               <!--  <a href="#" class="btn btn-default btn-xl wow tada">Sign Up Now!</a> -->
             </div>
         </div>
@@ -306,6 +306,7 @@
                         </div>
                     </form>
                 </div>
+
             <!--
                 <div class="col-lg-4 col-lg-offset-2 text-center">
                     <i class="fa fa-phone fa-3x wow bounceIn"></i>
@@ -390,6 +391,14 @@ form .row:first-child .floating-label-form-group {
     <script src="js/jquery.easing.min.js"></script>
     <script src="js/jquery.fittext.js"></script>
     <script src="js/wow.min.js"></script>
+    <script src="js/jqBootstrapValidation.js"></script>
+
+      <script type="text/javascript" src="http://www.parsecdn.com/js/parse-1.5.0.min.js"></script>
+
+<script type="text/javascript">
+    Parse.initialize("lFap7eWwesOtCBux5ASPLz9kOJLFados4LqakZSE", "lTsl9rKiJa9mZ5OxeafnDRtoJ4bWlcTEcJlXna47");
+</script>
+
 
     <!-- Custom Theme JavaScript -->
     <script src="js/creative.js"></script>
@@ -407,6 +416,124 @@ form .row:first-child .floating-label-form-group {
             });
 
     </script>
+
+
+    <!-- Send data to google form -->
+
+
+<script type="text/javascript">
+    $(function() {
+
+    $("input,textarea").jqBootstrapValidation({
+        preventSubmit: true,
+        submitError: function($form, event, errors) {
+            // additional error messages or events
+        },
+        submitSuccess: function($form, event) {
+            // Prevent spam click and default submit behaviour
+            $("#btnSubmit").attr("disabled", true);
+            event.preventDefault();
+            
+            // get values from FORM
+            var name = $("input#name").val();
+            var email = $("input#email").val();
+            var phone = $("input#phone").val();
+            var wishlist = $("textarea#wishlist").val();
+            var friendlist = $("textarea#friendlist").val();
+            var firstName = name; // For Success/Failure Message
+            // Check for white space in name for Success/Fail message
+            if (firstName.indexOf(' ') >= 0) {
+                firstName = name.split(' ').slice(0, -1).join(' ');
+            }
+
+                var SignupObject = Parse.Object.extend("SignupObject");
+                var testObject = new SignupObject();
+                  testObject.save({name:name,email:email,phone:phone,wishlist:wishlist,friendlist:friendlist}, {
+                  success: function(object) {
+                      $("#btnSubmit").attr("disabled", false);
+                    $('#success').html("<div class='alert alert-success'>");
+                    $('#success > .alert-success').html("<button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;")
+                        .append("</button>");
+                    $('#success > .alert-success')
+                        .append("<strong>Your message has been sent. </strong>");
+                    $('#success > .alert-success')
+                        .append('</div>');
+
+                    //clear all fields
+                    $('#contactForm').trigger("reset");
+
+                  },
+                  error: function(model, error) {
+                   // Fail message
+                    $('#success').html("<div class='alert alert-danger'>");
+                    $('#success > .alert-danger').html("<button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;")
+                        .append("</button>");
+                    $('#success > .alert-danger').append("<strong>Sorry " + firstName + ", it seems that my mail server is not responding. Please try again later!");
+                    $('#success > .alert-danger').append('</div>');
+                    //clear all fields
+                    $('#contactForm').trigger("reset");
+
+
+                  }
+                });
+            /*
+            $.ajax({
+                url: "https://docs.google.com/forms/d/1RowPLYacsPukm_QCb__hGxHpohSC8sNz8INz5XcXUjI/formResponse",
+                type: "POST",
+                data: {
+                    "entry.717179458": name,
+                    "entry.1104190430": phone,
+                    "entry.1401883306": email,
+                    "entry.355962087": wishlist,
+                    "entry.902372795":friendlist
+                },
+                cache: false,
+                success: function() {
+                    // Enable button & show success message
+                    $("#btnSubmit").attr("disabled", false);
+                    $('#success').html("<div class='alert alert-success'>");
+                    $('#success > .alert-success').html("<button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;")
+                        .append("</button>");
+                    $('#success > .alert-success')
+                        .append("<strong>Your message has been sent. </strong>");
+                    $('#success > .alert-success')
+                        .append('</div>');
+
+                    //clear all fields
+                    $('#contactForm').trigger("reset");
+                },
+                error: function() {
+                    // Fail message
+                    $('#success').html("<div class='alert alert-danger'>");
+                    $('#success > .alert-danger').html("<button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;")
+                        .append("</button>");
+                    $('#success > .alert-danger').append("<strong>Sorry " + firstName + ", it seems that my mail server is not responding. Please try again later!");
+                    $('#success > .alert-danger').append('</div>');
+                    //clear all fields
+                    $('#contactForm').trigger("reset");
+                },
+            })*/
+        },
+        filter: function() {
+            return $(this).is(":visible");
+        },
+    });
+
+    $("a[data-toggle=\"tab\"]").click(function(e) {
+        e.preventDefault();
+        $(this).tab("show");
+    });
+});
+
+// When clicking on Full hide fail/success boxes
+$('#name').focus(function() {
+    $('#success').html('');
+});
+
+</script>
+
+
+
 </body>
 
 </html>
